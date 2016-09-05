@@ -42,7 +42,32 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func importPicture() {
-        print("The right bar button item is being clicked")
+        let picker = UIImagePickerController()
+        picker.allowsEditing = true
+        picker.delegate = self
+        presentViewController(picker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        var newImage: UIImage
+        
+        if let possibleImage = info[UIImagePickerControllerEditedImage] as? UIImage {
+            newImage = possibleImage
+        } else if let possibleImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            newImage = possibleImage
+        } else {
+            return
+        }
+        
+        dismissViewControllerAnimated(true, completion: nil)
+        
+        // add the image to the images array
+        images.insert(newImage, atIndex: 0)
+        collectionView.reloadData()
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        dismissViewControllerAnimated(true, completion: nil)
     }
 
 }
