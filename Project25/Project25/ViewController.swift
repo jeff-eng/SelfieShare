@@ -19,7 +19,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         title = "Selfie Share"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Camera, target: self, action: #selector(importPicture))
-        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(showConnectionPrompt))
     }
 
     override func didReceiveMemoryWarning() {
@@ -61,13 +61,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         dismissViewControllerAnimated(true, completion: nil)
         
-        // add the image to the images array
+        // add the image to beginning of the images array
         images.insert(newImage, atIndex: 0)
         collectionView.reloadData()
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func showConnectionPrompt() {
+        let ac = UIAlertController(title: "Connect to others", message: nil, preferredStyle: .ActionSheet)
+        ac.addAction(UIAlertAction(title: "Host a session", style: .Default, handler: startHosting))
+        ac.addAction(UIAlertAction(title: "Join a session", style: .Default, handler: joinSession))
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        presentViewController(ac, animated: true, completion: nil)
     }
 
 }
