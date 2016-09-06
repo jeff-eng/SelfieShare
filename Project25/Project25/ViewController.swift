@@ -9,7 +9,7 @@
 import MultipeerConnectivity
 import UIKit
 
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, MCSessionDelegate, MCBrowserViewControllerDelegate {
 
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -27,6 +27,13 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         title = "Selfie Share"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Camera, target: self, action: #selector(importPicture))
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(showConnectionPrompt))
+        
+        // Initialize our MCSession in order to make connections
+        // - Create MCPeerID object using name of current device
+        peerID = MCPeerID(displayName: UIDevice.currentDevice().name)
+        // - Create the session using that ID
+        mcSession = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .Required)
+        mcSession.delegate = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -85,5 +92,46 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         presentViewController(ac, animated: true, completion: nil)
     }
 
+    func startHosting(action: UIAlertAction!) {
+        mcAdvertiserAssistant = MCAdvertiserAssistant(serviceType: "hws-project25", discoveryInfo: nil, session: mcSession)
+        mcAdvertiserAssistant.start()
+    }
+    
+    func joinSession(action: UIAlertAction!) {
+        let mcBrowser = MCBrowserViewController(serviceType: "hws-project25", session: mcSession)
+        mcBrowser.delegate = self
+        presentViewController(mcBrowser, animated: true, completion: nil)
+    }
+    
+    // Methods that are required to be included to conform to the MCSessionDelegate and MCBrowserViewControllerDelegate protocols
+    func session(session: MCSession, didReceiveStream stream: NSInputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
+        // no code block required, just declaring method to satisfy protocol
+    }
+    func session(session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, withProgress progress: NSProgress) {
+        // no code block required, just declaring method to satisfy protocol
+    }
+    func session(session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, atURL localURL: NSURL, withError error: NSError?) {
+        // no code block required, just declaring method to satisfy protocol
+    }
+    func browserViewControllerDidFinish(browserViewController: MCBrowserViewController) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    func browserViewControllerWasCancelled(browserViewController: MCBrowserViewController) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    // Method that prints diagnostic information about the peer
+    func session(session: MCSession, peer peerID: MCPeerID, didChangeState state: MCSessionState) {
+        switch state {
+        case MCSessionState.Connected:
+            print("Connected: \(peerID.displayName)")
+            
+        case MCSessionState.Connecting:
+            print("Connecting: \(peerID.displayName)")
+            
+        case MCSessionState.NotConnected:
+            print("Not Connected: \(peerID.displayName)")
+        }
+    }
 }
 
