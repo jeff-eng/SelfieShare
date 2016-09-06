@@ -78,6 +78,23 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         // add the image to beginning of the images array
         images.insert(newImage, atIndex: 0)
         collectionView.reloadData()
+        
+        // 1)Check if there are any peers to send to
+        if mcSession.connectedPeers.count > 0 {
+            // 2)Convert the new image to an NSData object
+            if let imageData = UIImagePNGRepresentation(newImage) {
+                // 3)Send it to all peers, ensuring it gets delivered
+                do {
+                    try mcSession.sendData(imageData, toPeers: mcSession.connectedPeers, withMode: .Reliable)
+                } catch let error as NSError {
+                    let ac = UIAlertController(title: "Send error", message: error.localizedDescription, preferredStyle: .Alert)
+                    ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                    presentViewController(ac, animated: true, completion: nil)
+                }
+            }
+        }
+        // show an error message if there's a problem
+        
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
@@ -131,6 +148,17 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             
         case MCSessionState.NotConnected:
             print("Not Connected: \(peerID.displayName)")
+        }
+    }
+    
+    // Put image into array if user receives photo from peer and update the the collection view
+    func session(session: MCSession, didReceiveData data: NSData, fromPeer peerID: MCPeerID) {
+        if let image = UIImage(data: data) {
+            dispatch_async(dispatch_get_main_queue()) { [unowned self] in
+                self.images.insert(image, atIndex: 0)
+                self.collectionView.reloadData()
+            }
+        
         }
     }
 }
