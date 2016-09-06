@@ -6,6 +6,7 @@
 //  Copyright © 2016 Jeffrey Eng. All rights reserved.
 //
 
+import MultipeerConnectivity
 import UIKit
 
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
@@ -13,6 +14,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var collectionView: UICollectionView!
     
     var images = [UIImage]()
+    
+    // Multipeer connectivity properties
+    var peerID: MCPeerID!
+    var mcSession: MCSession!
+    var mcAdvertiserAssistant: MCAdvertiserAssistant!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
