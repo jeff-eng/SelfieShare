@@ -87,13 +87,13 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                 do {
                     try mcSession.sendData(imageData, toPeers: mcSession.connectedPeers, withMode: .Reliable)
                 } catch let error as NSError {
+                    // 4)Show an error message if there's a problem
                     let ac = UIAlertController(title: "Send error", message: error.localizedDescription, preferredStyle: .Alert)
                     ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
                     presentViewController(ac, animated: true, completion: nil)
                 }
             }
         }
-        // show an error message if there's a problem
         
     }
     
