@@ -1,5 +1,5 @@
 # SelfieShare
-Repo following Project 25: Selfie Share: MCBrowserViewController and MCSession at Hacking with Swift
+Repo following Project 25: Selfie Share: MCBrowserViewController and MCSession at Hacking with Swift.  The goal is to practice collection views, image pickers, GCD, and learn about the multipeer connectivity network that creates an ad-hoc network to send data between users.
 
 ## Concepts learned/practiced
 * Learned:
@@ -10,8 +10,12 @@ Repo following Project 25: Selfie Share: MCBrowserViewController and MCSession a
     * ```MCAdvertiserAssistant``` - used when creating session, broadcasts out open sessions and handling invitations
 * Practiced:
   * Collection Views
-    * ```UICollectionViewDataSource``` protocol
-    * ```UICollectionViewDelegate``` protocol
+    * Protocols:
+      * ```UICollectionViewDataSource``` protocol
+      * ```UICollectionViewDelegate``` protocol
+    * Methods:
+      * ```numberOfItemsInSection``` method on ```collectionView``` class
+      * ```cellForItemAtIndexPath``` method on ```collectionView``` class
   * Image Picker with the ```UIImagePickerController``` class
     * Protocols:
       * ```UIImagePickerControllerDelegate``` protocol
